@@ -5,7 +5,6 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
-const path = require("path");
 
 // regular middlewares
 app.use(express.json());
