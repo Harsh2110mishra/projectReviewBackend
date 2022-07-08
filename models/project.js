@@ -26,7 +26,7 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: [
       true,
-      "please select category from- short-sleeves, long-sleeves, sweat-shirts, hoodies",
+      "please select category ONLY from - MERN, Python, MobileApp and Other ",
     ],
     enum: {
       values: ["MERN", "Python", "MobileApp", "Other"],

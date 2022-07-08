@@ -25,7 +25,9 @@
     "mongoose": "^6.4.2",
     "nodemailer": "^6.7.6",
     "path": "^0.12.7",
-    "validator": "^13.7.0"
+    "swagger-ui-express": "^4.4.0",
+    "validator": "^13.7.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.18"

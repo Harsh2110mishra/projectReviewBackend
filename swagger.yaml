@@ -1,0 +1,795 @@
+openapi: "3.0.0"
+info:
+  title: Backend For Project Review Web App
+  description: Web App API
+  version: 1.0.0
+  contact:
+   email: harsh2110.mishra@gmail.com
+   url: "https://github.com/Harsh2110mishra"
+
+servers:
+  - url: "{protocol}://{url}/api/"
+    description: for local host 
+    variables:
+      url:
+        enum:
+          - localhost:4000
+          - project-review-webapp.herokuapp.com
+        default: localhost:4000
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+
+paths:
+  
+  /signup:
+    post:
+      tags:
+        - User
+      summary: signup a new user. required fields are - name, email & password
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  required: true
+                email:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      _id:
+                        type: string
+                      createdAt:
+                        type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /login:
+    post:
+      tags:
+        - User
+      summary: login a new user. required fields are -  email and password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      _id:
+                        type: string
+                      createdAt:
+                        type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /logout:
+    get:
+      tags:
+        - User
+      summary: Get request to logout the user. Also removes token from local storage 
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /forgotPassword:
+    post:
+      tags:
+        - User
+      summary: sends an email with link to forgot password. Contains the token for user validation.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /userDetail:
+    get:
+      tags:
+        - User
+      summary: Gets all details about logged in user. Send token in cookies as named token or send Bearer Auth
+      requestBody:
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      photo:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          secure_url:
+                            type: string
+                      _id:
+                        type: string
+                      createdAt:
+                        type: string
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: If user is admin, response will get array of all users
+      requestBody:
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string
+                        _id:
+                          type: string
+                        createdAt:
+                          type: string
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /admin/user/{id}:
+    get:
+      tags:
+        - Admin
+      summary: If user is admin, response will get details of 1 user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string
+                        _id:
+                          type: string
+                        createdAt:
+                          type: string
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+    put:
+      tags:
+        - Admin
+      summary: If user is admin, he can update mentioned fields in user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: formData
+          required: true
+          schema:
+            type: string
+        - name: role
+          in: formData
+          required: true
+          schema:
+            type: string
+            enum: [user, admin]
+      requestBody: 
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+    delete:
+      tags:
+        - Admin
+      summary: If user is admin, delete the user with given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody: 
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                  
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /Projects:
+    get:
+      tags:
+        - Projects
+      summary: A simple get request will give you all Projects
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  projects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        name:
+                          type: string
+                        description: 
+                          type: string
+                        category: 
+                          type: string
+                        user: 
+                          type: string
+                        files: 
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              secure_url:
+                                type: string
+                        reviews: 
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              comment:
+                                type: string
+                              name:
+                                type: string
+                              rating:
+                                type: number
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /Project/{id}:
+    get:
+      tags:
+        - Projects
+      summary: Get a single project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  project:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      description: 
+                        type: string
+                      category: 
+                        type: string
+                      ratings: 
+                        type: number
+                      user: 
+                        type: string
+                      files: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            secure_url:
+                              type: string
+                      reviews: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            comment:
+                              type: string
+                            name:
+                              type: string
+                            rating:
+                              type: number
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /student/AllProjects:
+    get:
+      tags:
+        - Admin
+        - User
+      summary: Admin can get all projects, but user will get his projects only
+      
+      requestBody:
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  projects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        name:
+                          type: string
+                        description: 
+                          type: string
+                        category: 
+                          type: string
+                        user: 
+                          type: string
+                        files: 
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              secure_url:
+                                type: string
+                        reviews: 
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              comment:
+                                type: string
+                              name:
+                                type: string
+                              rating:
+                                type: number
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /student/addProject:
+    post:
+      tags:
+        - User
+      summary: Only User can add a project
+      parameters:
+        
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - category
+                - files
+              properties:
+                name:
+                  type: string
+                  required: true
+                description:
+                  type: number
+                  required: true
+                category:
+                  type: string
+                  required: true
+                  enum: [MERN, Python, MobileApp, Other]
+                files:
+                  in: formData
+                  description: The uploaded files
+                  type: auto
+        
+      responses:
+        200:
+          description: All good success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  project:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      description: 
+                        type: string
+                      category: 
+                        type: string
+                      user: 
+                        type: string
+                      files: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            secure_url:
+                              type: string
+                      reviews: 
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            comment:
+                              type: string
+                            name:
+                              type: string
+                            rating:
+                              type: number
+        400:
+          description: Bad request
+        500:
+          description: internal server error
+
+  /admin/project/reviews/:
+      get:
+        tags:
+          - Projects
+        summary: A simple get request will give you all reviews for given projects If you are admin
+        parameters:
+        - name: id
+          in: query
+          description: id of the project
+          required: true
+          schema:
+            type: string
+        requestBody:
+          
+        responses:
+          200:
+            description: All good success
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    reviews:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          rating: 
+                            type: number
+                          comment: 
+                            type: string
+                          _id: 
+                            type: string
+                          
+          400:
+            description: Bad request
+          500:
+            description: internal server error
+  
+  /review:
+      put:
+        tags:
+          - Projects
+        summary: A logged in admin can post a review on any project. If review is already posted, it will just update the existing review
+        parameters:
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - rating
+                  - comment
+                  - projectId
+                properties:
+                  rating:
+                    type: number
+                    required: true
+                  comment:
+                    type: string
+                    required: true
+                  projectId:
+                    type: string
+                    required: true
+        responses:
+          200:
+            description: All good success
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    reviews:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          rating: 
+                            type: number
+                          comment: 
+                            type: string
+                          _id: 
+                            type: string
+                          
+          400:
+            description: Bad request
+          500:
+            description: internal server error
+      delete:
+        tags:
+          - Projects
+        summary: Delete the review of logged in admin on given project id.
+        parameters:
+        - name: projectId
+          in: query
+          required: true
+          schema:
+            type: string
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - rating
+                  - comment
+                  - projectId
+                properties:
+                  rating:
+                    type: number
+                    required: true
+                  comment:
+                    type: string
+                    required: true
+                  projectId:
+                    type: string
+                    required: true
+        responses:
+          200:
+            description: All good success
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    reviews:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          user:
+                            type: string
+                          rating: 
+                            type: number
+                          comment: 
+                            type: string
+                          _id: 
+                            type: string
+                          
+          400:
+            description: Bad request
+          500:
+            description: internal server error

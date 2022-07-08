@@ -16,6 +16,13 @@ app.use(
   })
 );
 
+// For swagger documentation
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml'); 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 // cookies & file middlewares
 app.use(cookieParser());
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
