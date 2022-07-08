@@ -4,7 +4,7 @@ const customError = require("../utils/customErrors");
 const jwt = require("jsonwebtoken");
 
 exports.isLoggedIn = BigPromise(async (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.header("token").replace("Bearer", "");
 
   if (!token) return next(new customError("You are not logged in", 401));
 
